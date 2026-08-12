@@ -18,7 +18,7 @@ function M.on_ordered_kv( tbl, op )
   sort( keys )
   for _, k in ipairs( keys ) do
     local v = tbl[k]
-    assert( v ~= nil ) -- v could be `false`.
+    assert( v ~= nil, 'v is nil for k=' .. tostring( k ) ) -- v could be `false`.
     op( k, v )
   end
 end

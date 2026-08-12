@@ -39,6 +39,17 @@ function M.bar( c )
   print( dashes )
 end
 
+function M.title( title, c )
+  title = title and ' ' .. title .. ' ' or ''
+  c = c or '-'
+  local cols = terminal_columns_safe()
+  local cols_l = 2
+  local cols_r = max( cols - cols_l - #title, 0 )
+  local dashes_l = string.rep( c, cols_l )
+  local dashes_r = string.rep( c, cols_r )
+  print( dashes_l .. title .. dashes_r )
+end
+
 -- Given this input:
 --
 --   local desc = {

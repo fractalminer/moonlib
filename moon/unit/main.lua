@@ -32,7 +32,7 @@ local GREEN = colors.ANSI_GREEN
 local BLUE = colors.ANSI_BLUE
 local NORMAL = colors.ANSI_NORMAL
 local RED = colors.ANSI_RED
-local YELLOW = colors.ANSI_YELLOW
+local YELLOW = colors.ANSI_INTENSE_YELLOW
 local MAGENTA = colors.ANSI_MAGENTA
 
 local MAX_WIDTH = 100

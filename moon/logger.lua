@@ -19,7 +19,7 @@ local printfln = printer.printfln
 local ANSI_NORMAL = colors.ANSI_NORMAL
 local ANSI_GREEN = colors.ANSI_GREEN
 local ANSI_RED = colors.ANSI_RED
-local ANSI_YELLOW = colors.ANSI_YELLOW
+local ANSI_INTENSE_YELLOW = colors.ANSI_INTENSE_YELLOW
 local ANSI_BLUE = colors.ANSI_BLUE
 local ANSI_MAGENTA = colors.ANSI_MAGENTA
 local ANSI_BOLD = colors.ANSI_BOLD
@@ -69,7 +69,7 @@ function M.warn( fmt, ... )
   if M.level < M.levels.WARNING then return end
   assert( fmt )
   local msg = format( fmt, ... )
-  printfln( '%swarning%s %s', ANSI_YELLOW, ANSI_NORMAL, msg )
+  printfln( '%swarning%s %s', ANSI_INTENSE_YELLOW, ANSI_NORMAL, msg )
   io.flush()
 end
 

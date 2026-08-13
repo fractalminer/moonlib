@@ -8,16 +8,26 @@ local M = {}
 -----------------------------------------------------------------
 local char = string.char
 
+local ESC = char( 27 )
+
 -----------------------------------------------------------------
 -- Constants.
 -----------------------------------------------------------------
-M.ANSI_NORMAL = char( 27 ) .. '[00m'
-M.ANSI_GREEN = char( 27 ) .. '[32m'
-M.ANSI_RED = char( 27 ) .. '[31m'
-M.ANSI_YELLOW = char( 27 ) .. '[93m'
-M.ANSI_BLUE = char( 27 ) .. '[34m'
-M.ANSI_MAGENTA = char( 27 ) .. '[35m'
-M.ANSI_BOLD = char( 27 ) .. '[1m'
+local function C( code ) return ESC .. '[' .. code .. 'm' end
+
+M.ANSI_NORMAL = C( 0 )
+M.ANSI_GREEN = C( 32 )
+M.ANSI_RED = C( 31 )
+M.ANSI_YELLOW = C( 33 )
+M.ANSI_BLUE = C( 34 )
+M.ANSI_MAGENTA = C( 35 )
+M.ANSI_BOLD = C( 1 )
+M.ANSI_CYAN = C( 36 )
+M.ANSI_WHITE = C( 37 )
+
+M.ANSI_INTENSE_YELLOW = C( 33 )
+
+M.ANSI_ORANGE = ESC .. '[38;2;255;165;0m';
 
 -----------------------------------------------------------------
 -- Finished.

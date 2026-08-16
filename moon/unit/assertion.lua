@@ -33,6 +33,12 @@ function M.ASSERT_EQ( l, r )
   error( tostring( l ) .. ' != ' .. tostring( r ), 2 )
 end
 
+function M.ASSERT_NEQ( l, r )
+  if l ~= r then return end
+  -- we are "not not-equal", thus have to fail.
+  error( tostring( l ) .. ' !!= ' .. tostring( r ), 2 )
+end
+
 function M.ASSERT_LE( l, r )
   if l <= r then return end
   error( tostring( l ) .. ' > ' .. tostring( r ), 2 )

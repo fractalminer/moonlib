@@ -39,6 +39,11 @@ function M.is_wide_terminal()
   return cols > 250
 end
 
+function M.clear_screen()
+  -- Clears screen and moves cursor to top-left.
+  io.write( '\27[H\27[2J' )
+end
+
 -----------------------------------------------------------------
 -- Finished.
 -----------------------------------------------------------------

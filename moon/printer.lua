@@ -188,6 +188,26 @@ function M.format_kv_table( tbl, args )
   return format( '%s%s%s', start, line, ending )
 end
 
+M.format_table = M.format_kv_table
+
+function M.print_table( ... ) print( M.format_table( ... ) ) end
+
+function M.format_list( lst, args )
+  assert( type( lst ) == 'table' )
+  args = args or {}
+  local sep = args.sep or ','
+  local elems = {}
+  insert( elems, '[' )
+  for i, elem in ipairs( lst ) do
+    if i > 1 then insert( elems, sep ) end
+    insert( elems, tostring( elem ) )
+  end
+  insert( elems, ']' )
+  return concat( elems )
+end
+
+function M.print_list( ... ) print( M.format_list( ... ) ) end
+
 -----------------------------------------------------------------
 -- Finished.
 -----------------------------------------------------------------

@@ -4,8 +4,22 @@
 local M = {}
 
 -----------------------------------------------------------------
+-- Imports.
+-----------------------------------------------------------------
+local lst = require( 'moon.list' )
+
+-----------------------------------------------------------------
+-- Aliases.
+-----------------------------------------------------------------
+local unpack = table.unpack
+local concat = table.concat
+local insert = table.insert
+
+-----------------------------------------------------------------
 -- Implementation.
 -----------------------------------------------------------------
+function M.join( l, sep ) return concat( l, sep ) end
+
 function M.trim( str )
   -- The '-' is like '*' except it matches the shortest sequence
   -- instead of the longest sequence.
@@ -16,6 +30,55 @@ function M.trim_right( str )
   -- The '-' is like '*' except it matches the shortest sequence
   -- instead of the longest sequence.
   return str:match( '^(.-)%s*$' )
+end
+
+-- Set plain=true to suppress pattern matching in `sep` and just
+-- use its contents literally.
+function M.split( str, sep, plain )
+  if plain == nil then plain = false end
+  assert( type( str ) == 'string' )
+  sep = sep or ' '
+  local res = {}
+  while true do
+    local i, j = str:find( sep, 1, plain )
+    if not i then
+      insert( res, str )
+      break
+    end
+    local frag = str:sub( 1, i - 1 )
+    insert( res, frag )
+    str = str:sub( j + 1 )
+  end
+  return res
+end
+
+-- Split but return the results as a tuple:
+--   E.g. local k, v = tsplit( 'hello=world', '=' )
+function M.tsplit( str, sep )
+  return unpack( M.split( str, sep ) ) --
+end
+
+function M.tsplit_trim( str, sep, opts )
+  return unpack( M.split_trim( str, sep, opts ) ) --
+end
+
+function M.split_trim( str, sep, opts )
+  opts = opts or {}
+  opts.remove_empty = opts.remove_empty or false
+  local untrimmed = M.split( str, sep )
+  local trimmed = {}
+  for _, e in ipairs( untrimmed ) do
+    local s = M.trim( e )
+    if #s == 0 and opts.remove_empty then goto continue end
+    insert( trimmed, M.trim( e ) )
+    ::continue::
+  end
+  return trimmed
+end
+
+function M.enable_string_injections()
+  if not string.split then string.split = M.split end
+  if not string.join then string.join = M.join end
 end
 
 -----------------------------------------------------------------

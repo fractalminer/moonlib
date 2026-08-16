@@ -91,3 +91,25 @@ function Test.format_kv_table()
   } )
   ASSERT_EQ( res, expected )
 end
+
+function Test.format_table()
+  local input = { hello=1, world='foo' }
+  local expected = '[hello=1|world=foo]'
+  local res = printer.format_table( input, {
+    start='[',
+    ending=']',
+    kv_sep='=',
+    pair_sep='|',
+  } )
+  ASSERT_EQ( res, expected )
+end
+
+function Test.format_list()
+  local input = { 'hello', 42, 'world' }
+  local expected = '[hello,42,world]'
+  local res = printer.format_list( input )
+  ASSERT_EQ( res, expected )
+  expected = '[hello|42|world]'
+  res = printer.format_list( input, { sep='|' } )
+  ASSERT_EQ( res, expected )
+end

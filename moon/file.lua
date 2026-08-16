@@ -34,6 +34,16 @@ function M.is_symlink( path )
   return stat.S_ISLNK( s.st_mode ) ~= 0
 end
 
+function M.read_file( name )
+  local f<close> = assert( io.open( name, 'r' ) )
+  return f:read( 'a' )
+end
+
+function M.write_file( name, body )
+  local f<close> = assert( io.open( name, 'w' ) )
+  return f:write( body )
+end
+
 -- The lines do NOT contain newlines at the end.
 function M.read_file_lines( name )
   local f<close> = assert( io.open( name, 'r' ) )

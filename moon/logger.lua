@@ -59,21 +59,23 @@ function M.info( fmt, ... )
   io.flush()
 end
 
-function M.dbg( fmt, ... )
+function M.debug( fmt, ... )
   if M.level < M.levels.DEBUG then return end
   assert( fmt )
   local msg = format( fmt, ... )
-  printfln( '%s %sDBG%s %s', stamp(), ANSI_BLUE, ANSI_NORMAL,
-            msg )
+  printfln( '%s %sDBG%s %s', stamp(), ANSI_BLUE, ANSI_NORMAL, msg )
   io.flush()
 end
+
+-- Deprecated: use `debug'
+M.dbg = assert( M.debug )
 
 function M.trace( fmt, ... )
   if M.level < M.levels.TRACE then return end
   assert( fmt )
   local msg = format( fmt, ... )
-  printfln( '%s %sTRC%s %s', stamp(), ANSI_MAGENTA,
-            ANSI_NORMAL, msg )
+  printfln( '%s %sTRC%s %s', stamp(), ANSI_MAGENTA, ANSI_NORMAL,
+            msg )
   io.flush()
 end
 

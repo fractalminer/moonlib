@@ -195,6 +195,20 @@ function Test.split()
   end
 
   do
+    input = 'xxx=yyy'
+    local k, v = tsplit( input, '=' )
+    ASSERT_EQ( k, 'xxx' )
+    ASSERT_EQ( v, 'yyy' )
+  end
+
+  do
+    input = 'xxx'
+    local k, v = tsplit( input, '=' )
+    ASSERT_EQ( k, 'xxx' )
+    ASSERT_EQ( v, nil )
+  end
+
+  do
     input = 'aaa, bbb, ccc   ; comment'
     local config = split_trim( input, ';' )[1]
     local aaa, bbb, ccc = tsplit_trim( config, ',' )

@@ -231,7 +231,11 @@ function M.write_oneline( o, emit )
 end
 
 M.write = assert( M.write_pretty )
-M.print = assert( M.write_pretty )
+M.print = function( o, indent, emit )
+  emit = emit or function( ... ) io.stdout:write( ... ) end
+  M.write_pretty( o, indent, emit )
+  emit( '\n' )
+end
 
 function M.tostring( o )
   local lines = {}

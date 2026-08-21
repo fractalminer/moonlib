@@ -256,8 +256,8 @@ end
 
 function Test.injections()
   ASSERT_EQ( string.split )
-  ASSERT_EQ( string.join )
+  ASSERT_EQ( string.trim )
   str.enable_string_injections()
   ASSERT_NEQ( string.split, nil )
-  ASSERT_NEQ( string.join, nil )
+  ASSERT_NEQ( string.trim, nil )
 end

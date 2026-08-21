@@ -18,8 +18,6 @@ local insert = table.insert
 -----------------------------------------------------------------
 -- Implementation.
 -----------------------------------------------------------------
-function M.join( l, sep ) return concat( l, sep ) end
-
 function M.trim( str )
   -- The '-' is like '*' except it matches the shortest sequence
   -- instead of the longest sequence.
@@ -78,7 +76,7 @@ end
 
 function M.enable_string_injections()
   if not string.split then string.split = M.split end
-  if not string.join then string.join = M.join end
+  if not string.trim then string.trim = M.trim end
 end
 
 -----------------------------------------------------------------

@@ -52,7 +52,7 @@ function M.read_file_lines( name )
   return res
 end
 
-M.read_lines = M.read_file_lines
+M.read_lines = assert( M.read_file_lines )
 
 function M.append_string_to_file( filename, what )
   -- TODO: use <close> here.

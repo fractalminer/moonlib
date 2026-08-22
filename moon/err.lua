@@ -8,6 +8,7 @@ local M = {}
 -----------------------------------------------------------------
 local unpack = table.unpack
 local remove = table.remove
+local format = string.format
 local traceback = assert( debug.traceback )
 
 -----------------------------------------------------------------
@@ -35,6 +36,13 @@ function M.catch_control_c( fn, on_ctrl_c )
     return
   end
   error( msg )
+end
+
+function M.assertf( condition, ... )
+  if condition then return end
+  local _, msg = pcall( function( ... ) return format( ... ) end,
+                        ... )
+  assert( condition, msg )
 end
 
 -----------------------------------------------------------------

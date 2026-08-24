@@ -23,9 +23,8 @@ local trim = str.trim
 -- Implementation.
 -----------------------------------------------------------------
 function M.exists( name )
-  -- TODO: use <close> here.
-  local f = io.open( name, 'r' )
-  return f ~= nil and f:close()
+  -- Returns a table if the file exists, nil if it does not.
+  return stat.stat( name ) ~= nil
 end
 
 function M.is_symlink( path )

@@ -26,6 +26,8 @@ local ASSERT_EQ = assertion.ASSERT_EQ
 local ASSERT = assertion.ASSERT
 
 local now_micros = time.now_micros
+local now_millis = time.now_millis
+local now_seconds = time.now_seconds
 local sleep = time.sleep
 local timeit_micros = time.timeit_micros
 local timeit = time.timeit
@@ -36,6 +38,16 @@ local timeit = time.timeit
 function Test.now_micros()
   local now = now_micros()
   ASSERT_GE( now, 1706387206188896 )
+end
+
+function Test.now_millis()
+  local now = now_millis()
+  ASSERT_GE( now, 1706387206188 )
+end
+
+function Test.now_seconds()
+  local now = now_seconds()
+  ASSERT_GE( now, 1706387206 )
 end
 
 -- This also tests sleep.

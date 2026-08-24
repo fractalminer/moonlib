@@ -40,6 +40,10 @@ local function now_micros()
   return secs * 1000000 + (nanos // 1000)
 end
 
+local function now_millis() return now_micros() / 1000 end
+
+local function now_seconds() return now_micros() / 1000000 end
+
 -- Return runtime of function in micros, followed by any return
 -- values of the function.
 local function timeit_micros( func )
@@ -67,6 +71,8 @@ end
 return {
   sleep=sleep,
   now_micros=now_micros,
+  now_millis=now_millis,
+  now_seconds=now_seconds,
   timeit_micros=timeit_micros,
   timeit=timeit,
 }

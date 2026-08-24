@@ -28,8 +28,11 @@ local ASSERT_TABLE_EQ = assertion.ASSERT_TABLE_EQ
 
 local split = assert( str.split )
 local split_trim = assert( str.split_trim )
+local trim = assert( str.trim )
 local tsplit = assert( str.tsplit )
 local tsplit_trim = assert( str.tsplit_trim )
+local unwords = assert( str.unwords )
+local words = assert( str.words )
 
 -----------------------------------------------------------------
 -- Test cases.
@@ -214,10 +217,112 @@ function Test.split()
   end
 end
 
+function Test.trim()
+  local s, ex
+
+  s = ''
+  ex = ''
+  ASSERT_EQ( trim( s ), ex )
+
+  s = 'a'
+  ex = 'a'
+  ASSERT_EQ( trim( s ), ex )
+
+  s = 'abc'
+  ex = 'abc'
+  ASSERT_EQ( trim( s ), ex )
+
+  s = '  abc    '
+  ex = 'abc'
+  ASSERT_EQ( trim( s ), ex )
+
+  s = [[  abc
+
+  ]]
+  ex = 'abc'
+  ASSERT_EQ( trim( s ), ex )
+
+  s = '  hello   world  '
+  ex = 'hello   world'
+  ASSERT_EQ( trim( s ), ex )
+
+  s = '  hello   world  1 222   333'
+  ex = 'hello   world  1 222   333'
+  ASSERT_EQ( trim( s ), ex )
+end
+
+function Test.words()
+  local s, ex
+
+  s = ''
+  ex = {}
+  ASSERT_TABLE_EQ( words( s ), ex )
+
+  s = 'a'
+  ex = { 'a' }
+  ASSERT_TABLE_EQ( words( s ), ex )
+
+  s = 'abc'
+  ex = { 'abc' }
+  ASSERT_TABLE_EQ( words( s ), ex )
+
+  s = '  abc    '
+  ex = { 'abc' }
+  ASSERT_TABLE_EQ( words( s ), ex )
+
+  s = [[  abc
+
+  ]]
+  ex = { 'abc' }
+  ASSERT_TABLE_EQ( words( s ), ex )
+
+  s = '  hello   world  '
+  ex = { 'hello', 'world' }
+  ASSERT_TABLE_EQ( words( s ), ex )
+
+  s = '  hello   world  1 222   333'
+  ex = { 'hello', 'world', '1', '222', '333' }
+  ASSERT_TABLE_EQ( words( s ), ex )
+end
+
+function Test.unwords()
+  local s, ex
+
+  s = {}
+  ex = ''
+  ASSERT_EQ( unwords( s ), ex )
+
+  s = { 'a' }
+  ex = 'a'
+  ASSERT_EQ( unwords( s ), ex )
+
+  s = { 'abc' }
+  ex = 'abc'
+  ASSERT_EQ( unwords( s ), ex )
+
+  s = { '  ', 'abc', '    ' }
+  ex = 'abc'
+  ASSERT_EQ( unwords( s ), ex )
+
+  s = { '', 'a', 'b', '', 'c' }
+  ex = 'a b c'
+  ASSERT_EQ( unwords( s ), ex )
+
+  s = { '  hello', '   world  ' }
+  ex = 'hello world'
+  ASSERT_EQ( unwords( s ), ex )
+
+  s = { '  ', 'hello ', '  world ', ' 1', '222', '   333' }
+  ex = 'hello world 1 222 333'
+  ASSERT_EQ( unwords( s ), ex )
+end
+
 function Test.injections()
   ASSERT_EQ( string.split, nil )
   ASSERT_EQ( string.trim, nil )
+  ASSERT_EQ( string.words, nil )
   str.enable_string_injections()
   ASSERT_NEQ( string.split, nil )
   ASSERT_NEQ( string.trim, nil )
+  ASSERT_NEQ( string.words, nil )
 end

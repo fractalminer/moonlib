@@ -4,11 +4,6 @@
 local M = {}
 
 -----------------------------------------------------------------
--- Imports.
------------------------------------------------------------------
-local lst = require( 'moon.list' )
-
------------------------------------------------------------------
 -- Aliases.
 -----------------------------------------------------------------
 local unpack = table.unpack
@@ -18,6 +13,25 @@ local insert = table.insert
 -----------------------------------------------------------------
 -- Implementation.
 -----------------------------------------------------------------
+function M.words( str )
+  assert( type( str ) == 'string',
+          'expected type string but found type ' .. type( str ) )
+  local trimmed = M.trim( str )
+  if #trimmed == 0 then return {} end
+  return M.split( M.trim( str ), '%s+' )
+end
+
+function M.unwords( lst )
+  assert( type( lst ) == 'table',
+          'expected type table but found type ' .. type( lst ) )
+  local sanitized = {}
+  for _, s in ipairs( lst ) do
+    local trimmed = M.trim( s )
+    if #trimmed > 0 then insert( sanitized, trimmed ) end
+  end
+  return concat( sanitized, ' ' )
+end
+
 function M.trim( str )
   -- The '-' is like '*' except it matches the shortest sequence
   -- instead of the longest sequence.
@@ -77,6 +91,7 @@ end
 function M.enable_string_injections()
   if not string.split then string.split = M.split end
   if not string.trim then string.trim = M.trim end
+  if not string.words then string.words = M.words end
 end
 
 -----------------------------------------------------------------

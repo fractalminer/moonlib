@@ -26,7 +26,6 @@ local ASSERT_EQ = assertion.ASSERT_EQ
 local ASSERT_NEQ = assertion.ASSERT_NEQ
 local ASSERT_TABLE_EQ = assertion.ASSERT_TABLE_EQ
 
-local join = assert( str.join )
 local split = assert( str.split )
 local split_trim = assert( str.split_trim )
 local tsplit = assert( str.tsplit )
@@ -35,45 +34,6 @@ local tsplit_trim = assert( str.tsplit_trim )
 -----------------------------------------------------------------
 -- Test cases.
 -----------------------------------------------------------------
-function Test.join()
-  local input, sep, expected
-
-  input = {}
-  sep = ''
-  expected = ''
-  ASSERT_EQ( join( input, sep ), expected )
-
-  input = { '' }
-  sep = ''
-  expected = ''
-  ASSERT_EQ( join( input, sep ), expected )
-
-  input = { '' }
-  sep = '|'
-  expected = ''
-  ASSERT_EQ( join( input, sep ), expected )
-
-  input = { 'a' }
-  sep = '|'
-  expected = 'a'
-  ASSERT_EQ( join( input, sep ), expected )
-
-  input = { 'a', 'b' }
-  sep = '|'
-  expected = 'a|b'
-  ASSERT_EQ( join( input, sep ), expected )
-
-  input = { 'aaa', 'bcd', 'ccc' }
-  sep = ','
-  expected = 'aaa,bcd,ccc'
-  ASSERT_EQ( join( input, sep ), expected )
-
-  input = { 'hello', 'world', 'hello', 'world', 'world' }
-  sep = '-'
-  expected = 'hello-world-hello-world-world'
-  ASSERT_EQ( join( input, sep ), expected )
-end
-
 function Test.split()
   local input, sep, expected
 

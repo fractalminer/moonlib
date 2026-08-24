@@ -1,5 +1,5 @@
 -----------------------------------------------------------------
--- Tests for the printer module.
+-- Tests for the str module.
 -----------------------------------------------------------------
 local Test = ...
 
@@ -215,8 +215,8 @@ function Test.split()
 end
 
 function Test.injections()
-  ASSERT_EQ( string.split )
-  ASSERT_EQ( string.trim )
+  ASSERT_EQ( string.split, nil )
+  ASSERT_EQ( string.trim, nil )
   str.enable_string_injections()
   ASSERT_NEQ( string.split, nil )
   ASSERT_NEQ( string.trim, nil )

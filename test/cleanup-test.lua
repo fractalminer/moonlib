@@ -1,5 +1,5 @@
 -----------------------------------------------------------------
--- Tests for the printer module.
+-- Tests for the cleanup module.
 -----------------------------------------------------------------
 local Test = ...
 
@@ -7,44 +7,63 @@ local Test = ...
 -- Imports.
 -----------------------------------------------------------------
 local assertion = require'moon.unit.assertion'
-local list = require'moon.list'
+local mcleanup = require'moon.cleanup'
 
 -----------------------------------------------------------------
 -- Freeze global access.
 -----------------------------------------------------------------
 -- Declare all globals used.
 local assert = assert
-local coroutine = coroutine
 
 -- No reading or writing of globals from here on.
 local _ENV = nil
 
-local wrap = assert( coroutine.wrap )
-local yield = assert( coroutine.yield )
-
 -----------------------------------------------------------------
 -- Aliases.
 -----------------------------------------------------------------
-local ASSERT_TABLE_EQ = assertion.ASSERT_TABLE_EQ
+local ASSERT_EQ = assertion.ASSERT_EQ
 
-local listify = list.listify
+local cleanup = assert( mcleanup.cleanup )
 
 -----------------------------------------------------------------
 -- Test cases.
 -----------------------------------------------------------------
-function Test.listify()
+function Test.cleanup()
+  local n_called = 0
+
+  local fn = function() n_called = n_called + 1 end
+
   do
-    local function fn() end
-    local coro = wrap( fn )
-    local res = listify( coro )
-    local expected = {}
-    ASSERT_TABLE_EQ( res, expected )
+    ASSERT_EQ( n_called, 0 )
+    local _<close> = cleanup( fn )
+    ASSERT_EQ( n_called, 0 )
   end
+  ASSERT_EQ( n_called, 1 )
+
   do
-    local function fn() for i = 1, 5 do yield( i * i + 1 ) end end
-    local coro = wrap( fn )
-    local res = listify( coro )
-    local expected = { 2, 5, 10, 17, 26 }
-    ASSERT_TABLE_EQ( res, expected )
+    ASSERT_EQ( n_called, 1 )
+    local _<close> = cleanup( fn )
+    local _<close> = cleanup( fn )
+    ASSERT_EQ( n_called, 1 )
   end
+  ASSERT_EQ( n_called, 3 )
+
+  do
+    ASSERT_EQ( n_called, 3 )
+    local _1<close> = cleanup( fn )
+    local _2<close> = cleanup( fn )
+    ASSERT_EQ( n_called, 3 )
+    _1:release()
+  end
+  ASSERT_EQ( n_called, 4 )
+
+  do
+    ASSERT_EQ( n_called, 4 )
+    local _1<close> = cleanup( fn )
+    local _2<close> = cleanup( fn )
+    _1:release()
+    _2:release()
+    ASSERT_EQ( n_called, 4 )
+  end
+  ASSERT_EQ( n_called, 4 )
 end

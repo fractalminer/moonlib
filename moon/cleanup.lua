@@ -1,26 +1,34 @@
 -----------------------------------------------------------------
--- Functional programming stuff.
+-- Scope Guard.
 -----------------------------------------------------------------
 local M = {}
 
 -----------------------------------------------------------------
--- Aliases.
+-- Cleanup MT.
 -----------------------------------------------------------------
-local insert = table.insert
+local cleanup_mt = {}
+
+function cleanup_mt.__close( self )
+  if self._released then return end
+  self.fn()
+end
+
+function cleanup_mt.__newindex() error( 'cannot set new fields' ) end
+
+cleanup_mt.__index = cleanup_mt
+
+function cleanup_mt.release( self )
+  assert( self, 'missing member object' )
+  rawset( self, '_released', true )
+end
 
 -----------------------------------------------------------------
 -- Methods.
 -----------------------------------------------------------------
-function M.map( fn, lst )
-  assert( type( lst ) == 'table' )
-  local res = {}
-  for _, e in ipairs( lst ) do insert( res, fn( e ) ) end
-  return res
-end
-
-function M.for_each( lst, fn )
-  assert( type( lst ) == 'table' )
-  for _, e in ipairs( lst ) do fn( e ) end
+function M.cleanup( fn )
+  assert( fn )
+  local o = { fn=fn }
+  return setmetatable( o, cleanup_mt )
 end
 
 -----------------------------------------------------------------

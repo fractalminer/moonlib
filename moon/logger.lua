@@ -83,8 +83,8 @@ function M.warn( fmt, ... )
   if M.level < M.levels.WARNING then return end
   assert( fmt )
   local msg = format( fmt, ... )
-  printfln( '%s %sWRN%s %s', stamp(), ANSI_INTENSE_YELLOW,
-            ANSI_NORMAL, msg )
+  io.stderr:write( format( '%s %sWRN%s %s\n', stamp(),
+                           ANSI_INTENSE_YELLOW, ANSI_NORMAL, msg ) )
   io.flush()
 end
 
@@ -92,8 +92,9 @@ function M.err( fmt, ... )
   if M.level < M.levels.ERROR then return end
   assert( fmt )
   local msg = format( fmt, ... )
-  printfln( '%s %s%sERR%s %s', stamp(), ANSI_RED, ANSI_BOLD,
-            ANSI_NORMAL, msg )
+  io.stderr:write(
+      format( '%s %s%sERR%s %s\n', stamp(), ANSI_RED, ANSI_BOLD,
+              ANSI_NORMAL, msg ) )
   io.flush()
 end
 

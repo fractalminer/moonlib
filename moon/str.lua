@@ -90,6 +90,7 @@ end
 
 function M.enable_string_injections()
   if not string.split then string.split = M.split end
+  if not string.tsplit then string.tsplit = M.tsplit end
   if not string.trim then string.trim = M.trim end
   if not string.words then string.words = M.words end
 end

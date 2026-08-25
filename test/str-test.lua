@@ -319,10 +319,12 @@ end
 
 function Test.injections()
   ASSERT_EQ( string.split, nil )
+  ASSERT_EQ( string.tsplit, nil )
   ASSERT_EQ( string.trim, nil )
   ASSERT_EQ( string.words, nil )
   str.enable_string_injections()
   ASSERT_NEQ( string.split, nil )
+  ASSERT_NEQ( string.tsplit, nil )
   ASSERT_NEQ( string.trim, nil )
   ASSERT_NEQ( string.words, nil )
 end

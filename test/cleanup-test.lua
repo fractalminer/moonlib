@@ -24,6 +24,7 @@ local _ENV = nil
 local ASSERT_EQ = assertion.ASSERT_EQ
 
 local cleanup = assert( mcleanup.cleanup )
+local cleaned = assert( mcleanup.cleaned )
 
 -----------------------------------------------------------------
 -- Test cases.
@@ -71,6 +72,13 @@ function Test.cleanup()
     ASSERT_EQ( n_called, 4 )
     local _<close> = cleanup( fn )
     _:cleanup_now()
+    ASSERT_EQ( n_called, 5 )
+  end
+  ASSERT_EQ( n_called, 5 )
+
+  do
+    ASSERT_EQ( n_called, 5 )
+    local _<close> = cleaned( fn )
     ASSERT_EQ( n_called, 5 )
   end
   ASSERT_EQ( n_called, 5 )

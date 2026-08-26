@@ -37,6 +37,8 @@ function M.cleanup( fn )
   return setmetatable( o, cleanup_mt )
 end
 
+function M.cleaned() return M.cleanup( function() end ) end
+
 -----------------------------------------------------------------
 -- Finished.
 -----------------------------------------------------------------

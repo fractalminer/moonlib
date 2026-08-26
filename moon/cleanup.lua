@@ -39,6 +39,12 @@ end
 
 function M.cleaned() return M.cleanup( function() end ) end
 
+function M.chain( lst )
+  return M.cleanup( function()
+    for _, elem in ipairs( lst ) do elem:cleanup_now() end
+  end )
+end
+
 -----------------------------------------------------------------
 -- Finished.
 -----------------------------------------------------------------

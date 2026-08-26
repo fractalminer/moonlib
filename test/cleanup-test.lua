@@ -23,6 +23,7 @@ local _ENV = nil
 -----------------------------------------------------------------
 local ASSERT_EQ = assertion.ASSERT_EQ
 
+local chain = assert( mcleanup.chain )
 local cleanup = assert( mcleanup.cleanup )
 local cleaned = assert( mcleanup.cleaned )
 
@@ -87,6 +88,47 @@ function Test.cleanup()
     ASSERT_EQ( n_called, 5 )
     local _<close> = cleanup( fn )
     ASSERT_EQ( n_called, 5 )
+  end
+  ASSERT_EQ( n_called, 6 )
+end
+
+function Test.chained()
+  local n_called = 0
+
+  local fn = function() n_called = n_called + 1 end
+
+  do
+    ASSERT_EQ( n_called, 0 )
+    local _<close> = chain{
+      cleanup( fn ), --
+      cleanup( fn ), --
+      cleanup( fn ), --
+    }
+    ASSERT_EQ( n_called, 0 )
+  end
+  ASSERT_EQ( n_called, 3 )
+
+  do
+    ASSERT_EQ( n_called, 3 )
+    local _<close> = chain{
+      cleanup( fn ), --
+      cleanup( fn ), --
+      cleanup( fn ), --
+    }
+    _:cleanup_now()
+    ASSERT_EQ( n_called, 6 )
+  end
+  ASSERT_EQ( n_called, 6 )
+
+  do
+    ASSERT_EQ( n_called, 6 )
+    local _<close> = chain{
+      cleanup( fn ), --
+      cleanup( fn ), --
+      cleanup( fn ), --
+    }
+    _:release()
+    ASSERT_EQ( n_called, 6 )
   end
   ASSERT_EQ( n_called, 6 )
 end

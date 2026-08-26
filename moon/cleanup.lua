@@ -22,6 +22,12 @@ function cleanup_mt.release( self )
   rawset( self, '_released', true )
 end
 
+function cleanup_mt.cleanup_now( self )
+  assert( self, 'missing member object' )
+  self:__close()
+  rawset( self, '_released', true )
+end
+
 -----------------------------------------------------------------
 -- Methods.
 -----------------------------------------------------------------

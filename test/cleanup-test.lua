@@ -82,4 +82,11 @@ function Test.cleanup()
     ASSERT_EQ( n_called, 5 )
   end
   ASSERT_EQ( n_called, 5 )
+
+  do
+    ASSERT_EQ( n_called, 5 )
+    local _<close> = cleanup( fn )
+    ASSERT_EQ( n_called, 5 )
+  end
+  ASSERT_EQ( n_called, 6 )
 end

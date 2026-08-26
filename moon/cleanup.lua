@@ -11,6 +11,7 @@ local cleanup_mt = {}
 function cleanup_mt.__close( self )
   if self._released then return end
   self.fn()
+  self:release()
 end
 
 function cleanup_mt.__newindex() error( 'cannot set new fields' ) end
@@ -25,7 +26,6 @@ end
 function cleanup_mt.cleanup_now( self )
   assert( self, 'missing member object' )
   self:__close()
-  rawset( self, '_released', true )
 end
 
 -----------------------------------------------------------------

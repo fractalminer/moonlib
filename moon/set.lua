@@ -1,35 +1,64 @@
 -----------------------------------------------------------------
--- List methods.
+-- Set type.
 -----------------------------------------------------------------
-local M = {}
+local function create_set( lst )
+  lst = lst or {}
 
------------------------------------------------------------------
--- Imports.
------------------------------------------------------------------
-local mtbl = require'moon.tbl'
+  local size = 0
+  local contents = {}
+  local methods = {}
 
------------------------------------------------------------------
--- Aliases.
------------------------------------------------------------------
-local count_keys = mtbl.count_keys
+  local o = {}
 
------------------------------------------------------------------
--- Implementation.
------------------------------------------------------------------
-function M.set( list )
-  local set = {}
-  for _, e in ipairs( list ) do set[e] = true end
-  return set
+  function methods.add( self, elem )
+    assert( self == o, 'set called with incorrect self object' )
+    assert( elem, 'cannot insert nil into a set' )
+    if not contents[elem] then size = size + 1 end
+    contents[elem] = true
+  end
+
+  function methods.del( self, elem )
+    assert( self == o, 'set called with incorrect self object' )
+    assert( elem, 'cannot remove nil into a set' )
+    if contents[elem] then size = size - 1 end
+    assert( size >= 0 )
+    contents[elem] = nil
+  end
+
+  function methods.contains( self, elem )
+    assert( self == o, 'set called with incorrect self object' )
+    assert( elem, 'cannot contain nil in a set' )
+    return contents[elem] ~= nil
+  end
+
+  function methods.size( self )
+    assert( self == o, 'set called with incorrect self object' )
+    return size
+  end
+
+  local mt = {
+    __index=methods,
+    __newindex=function()
+      error( 'cannot set members of a set', 2 )
+    end,
+    __length=function() return size end,
+    __pairs=function() return pairs( contents ) end,
+    __ipairs=function()
+      -- There really is no way to get a well-defined ordering
+      -- here. We'd have to iterate using pairs, but that is not
+      -- deterministic.
+      error( 'sets are not ordered, use pairs instead.', 2 )
+    end,
+  }
+
+  local res = setmetatable( o, mt )
+
+  for _, elem in ipairs( lst ) do res:add( elem ) end
+
+  return res
 end
-
-function M.set_size( set ) return count_keys( set ) end
 
 -----------------------------------------------------------------
 -- Finished.
 -----------------------------------------------------------------
--- This allows using `set` as both the module name and as a set
--- constructor, which is desirable syntactically.
-return setmetatable( {}, {
-  __index=M,
-  __call=function( _, ... ) return M.set( ... ) end,
-} )
+return create_set

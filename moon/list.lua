@@ -11,9 +11,9 @@ local insert = table.insert
 -----------------------------------------------------------------
 -- Implementation.
 -----------------------------------------------------------------
-function M.listify( iter )
+function M.listify( ... )
   local res = {}
-  for e in iter do insert( res, e ) end
+  for e in ... do insert( res, e ) end
   return res
 end
 

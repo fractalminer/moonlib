@@ -16,14 +16,10 @@ local tbl = require'moon.tbl'
 -----------------------------------------------------------------
 local count_keys = tbl.count_keys
 local format = string.format
-local rep = string.rep
 local sort = table.sort
 local insert = table.insert
 local pcall = err.pcall_traceback
 local printfln = printer.printfln
-local terminal_width_safe = console.terminal_columns_safe
-local min = math.min
-local max = math.max
 
 -----------------------------------------------------------------
 -- Constants.
@@ -35,12 +31,12 @@ local RED = colors.ANSI_RED
 local YELLOW = colors.ANSI_INTENSE_YELLOW
 local MAGENTA = colors.ANSI_MAGENTA
 
-local MAX_WIDTH = 100
-
 -----------------------------------------------------------------
 -- Methods.
 -----------------------------------------------------------------
 local function run_test_cases( module_name, pack )
+  module_name = module_name:match( 'test/(.*)' )
+  module_name = module_name:match( '(.*)%-test' )
   local sorted_names = {}
   local longest_length = 0
   for name in pairs( pack ) do
@@ -48,22 +44,15 @@ local function run_test_cases( module_name, pack )
     insert( sorted_names, name )
   end
   sort( sorted_names )
-  local w = min( MAX_WIDTH, terminal_width_safe() )
-  local PREFIX = 'test case: '
   for _, name in ipairs( sorted_names ) do
-    local text_no_colors = format( '%s%s.%s', PREFIX,
-                                   module_name, name )
-    local num_dots = w - #text_no_colors - #' passed' -- or failed
-    num_dots = max( num_dots, 3 )
-    io.write( format( '%s%s%s%s.%s%s%s%s', PREFIX, MAGENTA,
-                      module_name, NORMAL, BLUE, name, NORMAL,
-                      rep( '.', num_dots ) ) )
-    io.flush()
     local ok, res = pcall( pack[name] )
+    local full_name = format( '%s%s%s.%s%s%s', MAGENTA,
+                              module_name, NORMAL, BLUE, name,
+                              NORMAL )
     if ok then
-      printfln( '%s passed%s', GREEN, NORMAL )
+      printfln( '[%spassed%s] %s', GREEN, NORMAL, full_name )
     else
-      printfln( '%s failed%s', RED, NORMAL )
+      printfln( '[%sfailed%s] %s', RED, NORMAL, full_name )
       printfln( '%s%s%s', YELLOW, res, NORMAL )
       return false
     end

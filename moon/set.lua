@@ -1,4 +1,16 @@
 -----------------------------------------------------------------
+-- Set Type.
+-----------------------------------------------------------------
+local list = require( 'moon.list' )
+
+-----------------------------------------------------------------
+-- Aliases.
+-----------------------------------------------------------------
+local listify = assert( list.listify )
+
+local yield = assert( coroutine.yield )
+
+-----------------------------------------------------------------
 -- Set type.
 -----------------------------------------------------------------
 local function create_set( lst )
@@ -36,6 +48,16 @@ local function create_set( lst )
     return size
   end
 
+  function methods.list( self )
+    assert( self == o, 'set called with incorrect self object' )
+    return listify( pairs( contents ) )
+  end
+
+  function methods.iter( self )
+    assert( self == o, 'set called with incorrect self object' )
+    return pairs( contents )
+  end
+
   local mt = {
     __index=methods,
     __newindex=function()
@@ -43,12 +65,7 @@ local function create_set( lst )
     end,
     __length=function() return size end,
     __pairs=function() return pairs( contents ) end,
-    __ipairs=function()
-      -- There really is no way to get a well-defined ordering
-      -- here. We'd have to iterate using pairs, but that is not
-      -- deterministic.
-      error( 'sets are not ordered, use pairs instead.', 2 )
-    end,
+    __ipairs=function() return ipairs( contents ) end,
   }
 
   local res = setmetatable( o, mt )

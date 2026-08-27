@@ -1,5 +1,5 @@
 -----------------------------------------------------------------
--- Tests for the printer module.
+-- Tests for the set module.
 -----------------------------------------------------------------
 local Test = ...
 
@@ -100,4 +100,13 @@ function Test.set()
   ASSERT( not s:contains( 'xxx' ) )
   ASSERT_TABLE_EQ( sorted( listify( pairs( s ) ) ),
                    { 'one', 'three', 'two' } )
+
+  -- A few different ways to convert it to a list.
+  local lst = {}
+  for elem in s:iter() do insert( lst, elem ) end
+  ASSERT_TABLE_EQ( sorted( lst ), { 'one', 'three', 'two' } )
+  lst = listify( pairs( s ) )
+  ASSERT_TABLE_EQ( sorted( lst ), { 'one', 'three', 'two' } )
+  lst = s:list()
+  ASSERT_TABLE_EQ( sorted( lst ), { 'one', 'three', 'two' } )
 end

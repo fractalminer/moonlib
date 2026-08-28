@@ -21,6 +21,16 @@
 --   assert( not s:contains( 'two' ) )
 --   assert( #s == 2 )
 --
+--   -- Non-deterministic order.
+--   for elem in s do
+--     ...
+--   end
+--
+--   -- Deterministic order.
+--   for elem in s:sorted() do
+--     ...
+--   end
+--
 local M = {}
 -----------------------------------------------------------------
 -- Imports.
@@ -31,6 +41,10 @@ local list = require( 'moon.list' )
 -- Aliases.
 -----------------------------------------------------------------
 local listify = assert( list.listify )
+
+local concat = assert( table.concat )
+local insert = assert( table.insert )
+local sort = assert( table.sort )
 
 -----------------------------------------------------------------
 -- Set type.
@@ -80,9 +94,18 @@ function M.set( lst )
     return M.set( self:list() )
   end
 
+  -- Non-deterministic order.
   function methods.list( self )
     assert( self == o, 'set called with incorrect self object' )
     return listify( self )
+  end
+
+  -- Returns a sorted list.
+  function methods.sorted( self )
+    assert( self == o, 'set called with incorrect self object' )
+    local l = self:list()
+    sort( l )
+    return l
   end
 
   function methods.clear( self )
@@ -107,6 +130,19 @@ function M.set( lst )
     return copy
   end
 
+  function methods.tostring( self )
+    assert( self == o, 'set called with incorrect self object' )
+    local cs = { '{' }
+    local comma = ''
+    for _, e in ipairs( self:sorted() ) do
+      insert( cs, comma )
+      insert( cs, tostring( e ) )
+      comma = ','
+    end
+    insert( cs, '}' )
+    return concat( cs )
+  end
+
   local mt = {
     __index=methods,
     __newindex=function()
@@ -122,6 +158,7 @@ function M.set( lst )
     -- This allows: for e in s do ... end
     __call=function( _, _, key ) return next( contents, key ) end,
     __sub=methods.diff,
+    __tostring=methods.tostring,
   }
 
   local res = setmetatable( o, mt )

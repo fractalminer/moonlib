@@ -21,6 +21,7 @@
 --   assert( not s:contains( 'two' ) )
 --   assert( #s == 2 )
 --
+local M = {}
 -----------------------------------------------------------------
 -- Imports.
 -----------------------------------------------------------------
@@ -34,7 +35,7 @@ local listify = assert( list.listify )
 -----------------------------------------------------------------
 -- Set type.
 -----------------------------------------------------------------
-local function create_set( lst )
+function M.set( lst )
   lst = lst or {}
 
   local size = 0
@@ -74,6 +75,11 @@ local function create_set( lst )
     return size == 0
   end
 
+  function methods.clone( self )
+    assert( self == o, 'set called with incorrect self object' )
+    return M.set( self:list() )
+  end
+
   function methods.list( self )
     assert( self == o, 'set called with incorrect self object' )
     return listify( self )
@@ -83,6 +89,22 @@ local function create_set( lst )
     assert( self == o, 'set called with incorrect self object' )
     contents = {}
     size = 0
+  end
+
+  function methods.subtract( self, other )
+    assert( self == o, 'set called with incorrect self object' )
+    if self == other then
+      self:clear()
+      return
+    end
+    for e in other do self:del( e ) end
+  end
+
+  function methods.diff( self, other )
+    assert( self == o, 'set called with incorrect self object' )
+    local copy = self:clone()
+    copy:subtract( other )
+    return copy
   end
 
   local mt = {
@@ -99,7 +121,7 @@ local function create_set( lst )
     end,
     -- This allows: for e in s do ... end
     __call=function( _, _, key ) return next( contents, key ) end,
-
+    __sub=methods.diff,
   }
 
   local res = setmetatable( o, mt )
@@ -112,4 +134,4 @@ end
 -----------------------------------------------------------------
 -- Finished.
 -----------------------------------------------------------------
-return create_set
+return M.set

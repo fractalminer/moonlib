@@ -132,5 +132,56 @@ function Test.set()
   ASSERT( s:empty() )
   ASSERT( not s:contains( 'two' ) )
   ASSERT( not s:contains( 'xxx' ) )
-  ASSERT_TABLE_EQ( sorted( s:list() ), {} )
+
+  local s1, s2, s3
+  s1 = set{ 'one', 'two', 'three', 'four' }
+  s2 = set{ 'two', 'four', 'abc', 'def' }
+  s3 = s1:clone()
+  ASSERT_TABLE_EQ( sorted( s1:list() ),
+                   { 'four', 'one', 'three', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s2:list() ),
+                   { 'abc', 'def', 'four', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s3:list() ),
+                   { 'four', 'one', 'three', 'two' } )
+  s3 = s1:diff( s2 )
+  ASSERT_TABLE_EQ( sorted( s1:list() ),
+                   { 'four', 'one', 'three', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s2:list() ),
+                   { 'abc', 'def', 'four', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s3:list() ), { 'one', 'three' } )
+  s1:subtract( s3 )
+  ASSERT_TABLE_EQ( sorted( s1:list() ), { 'four', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s2:list() ),
+                   { 'abc', 'def', 'four', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s3:list() ), { 'one', 'three' } )
+  s2 = s2 - s3
+  ASSERT_TABLE_EQ( sorted( s1:list() ), { 'four', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s2:list() ),
+                   { 'abc', 'def', 'four', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s3:list() ), { 'one', 'three' } )
+  s2 = s2 - set()
+  ASSERT_TABLE_EQ( sorted( s1:list() ), { 'four', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s2:list() ),
+                   { 'abc', 'def', 'four', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s3:list() ), { 'one', 'three' } )
+  s2 = s2 - s1
+  ASSERT_TABLE_EQ( sorted( s1:list() ), { 'four', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s2:list() ), { 'abc', 'def' } )
+  ASSERT_TABLE_EQ( sorted( s3:list() ), { 'one', 'three' } )
+  s2 = s2 - s2
+  ASSERT_TABLE_EQ( sorted( s1:list() ), { 'four', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s2:list() ), {} )
+  ASSERT_TABLE_EQ( sorted( s3:list() ), { 'one', 'three' } )
+  s1:subtract( s1 )
+  ASSERT_TABLE_EQ( sorted( s1:list() ), {} )
+  ASSERT_TABLE_EQ( sorted( s2:list() ), {} )
+  ASSERT_TABLE_EQ( sorted( s3:list() ), { 'one', 'three' } )
+  s3 = s3:diff( s1 )
+  ASSERT_TABLE_EQ( sorted( s1:list() ), {} )
+  ASSERT_TABLE_EQ( sorted( s2:list() ), {} )
+  ASSERT_TABLE_EQ( sorted( s3:list() ), { 'one', 'three' } )
+  s3 = s3:diff( s3 )
+  ASSERT_TABLE_EQ( sorted( s1:list() ), {} )
+  ASSERT_TABLE_EQ( sorted( s2:list() ), {} )
+  ASSERT_TABLE_EQ( sorted( s3:list() ), {} )
 end

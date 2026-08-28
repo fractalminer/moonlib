@@ -69,6 +69,11 @@ local function create_set( lst )
     return size
   end
 
+  function methods.empty( self )
+    assert( self == o, 'set called with incorrect self object' )
+    return size == 0
+  end
+
   function methods.list( self )
     assert( self == o, 'set called with incorrect self object' )
     return listify( self )

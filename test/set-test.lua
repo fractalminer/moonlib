@@ -18,6 +18,7 @@ local assert = assert
 local ipairs = ipairs
 local pairs = pairs
 local table = table
+local print = print
 
 -- No reading or writing of globals from here on.
 local _ENV = nil
@@ -52,61 +53,74 @@ function Test.set()
 
   s = set()
   ASSERT_EQ( s:size(), 0 )
+  ASSERT_EQ( #s, 0 )
   ASSERT( not s:contains( 'two' ) )
   ASSERT( not s:contains( 'four' ) )
-  ASSERT_TABLE_EQ( listify( pairs( s ) ), {} )
+  ASSERT_TABLE_EQ( s:list(), {} )
   s:add( 'four' )
   ASSERT_EQ( s:size(), 1 )
+  ASSERT_EQ( #s, 1 )
   ASSERT( not s:contains( 'two' ) )
   ASSERT( s:contains( 'four' ) )
-  ASSERT_TABLE_EQ( listify( pairs( s ) ), { 'four' } )
+  ASSERT_TABLE_EQ( s:list(), { 'four' } )
   s:add( 'four' )
   ASSERT_EQ( s:size(), 1 )
+  ASSERT_EQ( #s, 1 )
   ASSERT( not s:contains( 'two' ) )
   ASSERT( s:contains( 'four' ) )
-  ASSERT_TABLE_EQ( listify( pairs( s ) ), { 'four' } )
+  ASSERT_TABLE_EQ( s:list(), { 'four' } )
   s:del( 'two' )
   ASSERT_EQ( s:size(), 1 )
+  ASSERT_EQ( #s, 1 )
   ASSERT( not s:contains( 'two' ) )
   ASSERT( s:contains( 'four' ) )
-  ASSERT_TABLE_EQ( listify( pairs( s ) ), { 'four' } )
+  ASSERT_TABLE_EQ( s:list(), { 'four' } )
   s:del( 'four' )
   ASSERT_EQ( s:size(), 0 )
+  ASSERT_EQ( #s, 0 )
   ASSERT( not s:contains( 'two' ) )
   ASSERT( not s:contains( 'four' ) )
-  ASSERT_TABLE_EQ( listify( pairs( s ) ), {} )
+  ASSERT_TABLE_EQ( s:list(), {} )
 
   s = set{ 'one', 'two', 'three' }
   ASSERT_EQ( s:size(), 3 )
+  ASSERT_EQ( #s, 3 )
   ASSERT( s:contains( 'two' ) )
   ASSERT( not s:contains( 'xxx' ) )
-  ASSERT_TABLE_EQ( sorted( listify( pairs( s ) ) ),
-                   { 'one', 'three', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s:list() ), { 'one', 'three', 'two' } )
   s:add( 'two' )
   ASSERT_EQ( s:size(), 3 )
+  ASSERT_EQ( #s, 3 )
   ASSERT( s:contains( 'two' ) )
   ASSERT( not s:contains( 'xxx' ) )
-  ASSERT_TABLE_EQ( sorted( listify( pairs( s ) ) ),
-                   { 'one', 'three', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s:list() ), { 'one', 'three', 'two' } )
   s:add( 'xxx' )
   ASSERT_EQ( s:size(), 4 )
+  ASSERT_EQ( #s, 4 )
   ASSERT( s:contains( 'two' ) )
   ASSERT( s:contains( 'xxx' ) )
-  ASSERT_TABLE_EQ( sorted( listify( pairs( s ) ) ),
+  ASSERT_TABLE_EQ( sorted( s:list() ),
                    { 'one', 'three', 'two', 'xxx' } )
   s:del( 'xxx' )
   ASSERT_EQ( s:size(), 3 )
+  ASSERT_EQ( #s, 3 )
   ASSERT( s:contains( 'two' ) )
   ASSERT( not s:contains( 'xxx' ) )
-  ASSERT_TABLE_EQ( sorted( listify( pairs( s ) ) ),
-                   { 'one', 'three', 'two' } )
+  ASSERT_TABLE_EQ( sorted( s:list() ), { 'one', 'three', 'two' } )
 
   -- A few different ways to convert it to a list.
   local lst = {}
-  for elem in pairs( s ) do insert( lst, elem ) end
+  for elem in s do insert( lst, elem ) end
   ASSERT_TABLE_EQ( sorted( lst ), { 'one', 'three', 'two' } )
-  lst = listify( pairs( s ) )
+  lst = listify( s )
   ASSERT_TABLE_EQ( sorted( lst ), { 'one', 'three', 'two' } )
   lst = s:list()
   ASSERT_TABLE_EQ( sorted( lst ), { 'one', 'three', 'two' } )
+
+  s:clear()
+  ASSERT_EQ( s:size(), 0 )
+  ASSERT_EQ( #s, 0 )
+  ASSERT( not s:contains( 'two' ) )
+  ASSERT( not s:contains( 'xxx' ) )
+  ASSERT_TABLE_EQ( sorted( s:list() ), {} )
 end

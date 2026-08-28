@@ -1,14 +1,35 @@
 -----------------------------------------------------------------
 -- Set Type.
 -----------------------------------------------------------------
+-- Usage:
+--
+--   local set = require( 'moon.set' )
+--
+--   s = set()
+--   s:add( 'one' )
+--   s:add( 'two' )
+--   s:add( 'three' )
+--   assert( #s == 3 )
+--   assert( s:size() == 3 )
+--   assert( s:contains( 'two' ) )
+--   assert( not s:contains( 'xxx' ) )
+--
+--   s = set{ 'one', 'two', 'three' }
+--   assert( s:contains( 'two' ) )
+--   assert( #s == 3 )
+--   s:del( 'two' )
+--   assert( not s:contains( 'two' ) )
+--   assert( #s == 2 )
+--
+-----------------------------------------------------------------
+-- Imports.
+-----------------------------------------------------------------
 local list = require( 'moon.list' )
 
 -----------------------------------------------------------------
 -- Aliases.
 -----------------------------------------------------------------
 local listify = assert( list.listify )
-
-local yield = assert( coroutine.yield )
 
 -----------------------------------------------------------------
 -- Set type.
@@ -50,7 +71,13 @@ local function create_set( lst )
 
   function methods.list( self )
     assert( self == o, 'set called with incorrect self object' )
-    return listify( pairs( contents ) )
+    return listify( self )
+  end
+
+  function methods.clear( self )
+    assert( self == o, 'set called with incorrect self object' )
+    contents = {}
+    size = 0
   end
 
   local mt = {
@@ -58,9 +85,16 @@ local function create_set( lst )
     __newindex=function()
       error( 'cannot set members of a set', 2 )
     end,
-    __length=function() return size end,
-    __pairs=function() return pairs( contents ) end,
-    __ipairs=function() return ipairs( contents ) end,
+    __len=function() return size end,
+    __pairs=function()
+      error( 'a set does not have pairs: use items()', 2 )
+    end,
+    __ipairs=function()
+      error( 'set items are not ordered: use items()', 2 )
+    end,
+    -- This allows: for e in s do ... end
+    __call=function( _, _, key ) return next( contents, key ) end,
+
   }
 
   local res = setmetatable( o, mt )

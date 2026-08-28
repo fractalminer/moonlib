@@ -53,11 +53,6 @@ local function create_set( lst )
     return listify( pairs( contents ) )
   end
 
-  function methods.iter( self )
-    assert( self == o, 'set called with incorrect self object' )
-    return pairs( contents )
-  end
-
   local mt = {
     __index=methods,
     __newindex=function()

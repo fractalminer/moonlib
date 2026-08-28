@@ -103,7 +103,7 @@ function Test.set()
 
   -- A few different ways to convert it to a list.
   local lst = {}
-  for elem in s:iter() do insert( lst, elem ) end
+  for elem in pairs( s ) do insert( lst, elem ) end
   ASSERT_TABLE_EQ( sorted( lst ), { 'one', 'three', 'two' } )
   lst = listify( pairs( s ) )
   ASSERT_TABLE_EQ( sorted( lst ), { 'one', 'three', 'two' } )

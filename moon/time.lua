@@ -40,12 +40,14 @@ local function now_nanos()
   return secs * 1000000000 + nanos
 end
 
--- Return the current epoch time in micros.
-local function now_micros() return now_nanos() / 1000 end
+-- NOTE: We do integer division to get the us/ms/sec versionn
+-- below (there may be things that depend on that).
 
-local function now_millis() return now_micros() / 1000 end
+local function now_micros() return now_nanos() // 1000 end
 
-local function now_seconds() return now_millis() / 1000 end
+local function now_millis() return now_micros() // 1000 end
+
+local function now_seconds() return now_millis() // 1000 end
 
 -- Return runtime of function in micros, followed by any return
 -- values of the function.

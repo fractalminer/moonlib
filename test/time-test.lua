@@ -25,6 +25,7 @@ local ASSERT_GE = assertion.ASSERT_GE
 local ASSERT_EQ = assertion.ASSERT_EQ
 local ASSERT = assertion.ASSERT
 
+local now_nanos = time.now_nanos
 local now_micros = time.now_micros
 local now_millis = time.now_millis
 local now_seconds = time.now_seconds
@@ -35,6 +36,11 @@ local timeit = time.timeit
 -----------------------------------------------------------------
 -- Test cases.
 -----------------------------------------------------------------
+function Test.now_nanos()
+  local now = now_nanos()
+  ASSERT_GE( now, 1706387206188896000 )
+end
+
 function Test.now_micros()
   local now = now_micros()
   ASSERT_GE( now, 1706387206188896 )

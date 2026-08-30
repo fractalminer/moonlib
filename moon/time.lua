@@ -34,15 +34,18 @@ local function sleep( secs )
 end
 
 -- Return the current epoch time in micros.
-local function now_micros()
+local function now_nanos()
   local spec = clock_gettime( CLOCK_REALTIME )
   local secs, nanos = spec.tv_sec, spec.tv_nsec
-  return secs * 1000000 + (nanos // 1000)
+  return secs * 1000000000 + nanos
 end
+
+-- Return the current epoch time in micros.
+local function now_micros() return now_nanos() / 1000 end
 
 local function now_millis() return now_micros() / 1000 end
 
-local function now_seconds() return now_micros() / 1000000 end
+local function now_seconds() return now_millis() / 1000 end
 
 -- Return runtime of function in micros, followed by any return
 -- values of the function.
@@ -70,6 +73,7 @@ end
 -----------------------------------------------------------------
 return {
   sleep=sleep,
+  now_nanos=now_nanos,
   now_micros=now_micros,
   now_millis=now_millis,
   now_seconds=now_seconds,

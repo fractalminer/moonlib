@@ -149,11 +149,13 @@ function M.set( lst )
       error( 'cannot set members of a set', 2 )
     end,
     __len=function() return size end,
+    -- NOTE: __ipairs removed in 5.4; the ipairs method now uses
+    -- the __index method. Because of that, we can't prevent the
+    -- user from using ipairs, which would be ideal because
+    -- ipairs won't work on the set because it doesn't have nu-
+    -- merical keys or an ordering.
     __pairs=function()
       error( 'a set does not have pairs: use items()', 2 )
-    end,
-    __ipairs=function()
-      error( 'set items are not ordered: use items()', 2 )
     end,
     -- This allows: for e in s do ... end
     __call=function( _, _, key ) return next( contents, key ) end,

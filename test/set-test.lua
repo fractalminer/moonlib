@@ -18,6 +18,7 @@ local assert = assert
 local ipairs = ipairs
 local table = table
 local tostring = tostring
+local pairs = pairs
 
 -- No reading or writing of globals from here on.
 local _ENV = nil
@@ -30,6 +31,7 @@ local listify = assert( list.listify )
 local ASSERT = assertion.ASSERT
 local ASSERT_EQ = assertion.ASSERT_EQ
 local ASSERT_TABLE_EQ = assertion.ASSERT_TABLE_EQ
+local ASSERT_THROWS = assertion.ASSERT_THROWS
 
 local insert = assert( table.insert )
 local sort = assert( table.sort )
@@ -183,4 +185,6 @@ function Test.set()
   ASSERT_EQ( tostring( s ), '{one,two}' )
   s = set{ 'one', 'two', 'three', 'four' }
   ASSERT_EQ( s:tostring(), '{four,one,three,two}' )
+
+  ASSERT_THROWS( pairs, s )
 end

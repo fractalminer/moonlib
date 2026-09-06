@@ -1,0 +1,7 @@
+[
+  {
+    "directory": "/home/dsicilia/dev/moonlib/ext",
+    "command": "cc -O2 -Wall -Wextra -Wpedantic -fPIC -I/usr/include/lua5.4 -c zstd.c -o zstd.o",
+    "file": "zstd.c"
+  }
+]

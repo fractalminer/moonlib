@@ -12,21 +12,25 @@ PREFIX     ?= $(HOME)/.local
 LUA_CMOD   ?= $(PREFIX)/lib/lua/$(LUA_VERSION)
 MOON_CMOD  ?= $(LUA_CMOD)/moon
 
-TARGET := zstd.so
-OBJECT := zstd.o
+BUILD_OUT  := .build
 
-INSTALLED  := $(MOON_CMOD)/$(TARGET)
+TARGET := $(BUILD_OUT)/zstd.so
+OBJECT := $(BUILD_OUT)/zstd.o
+
+INSTALLED  := $(MOON_CMOD)/$(notdir $(TARGET))
 
 .PHONY: all install clean
 
 all: $(TARGET)
 
 # Compile.
-$(OBJECT): src/zstd.cpp Makefile
+$(BUILD_OUT)/%.o: src/%.cpp Makefile
+	@mkdir -p $(BUILD_OUT)
 	$(CXX) $(CFLAGS) $(LUA_CFLAGS) -c -o $@ $<
 
 # Link.
-$(TARGET): $(OBJECT) Makefile
+.build/%.so: $(BUILD_OUT)/%.o Makefile
+	@mkdir -p $(BUILD_OUT)
 	$(CXX) -shared -o $@ $< $(LUA_LIBS) $(ZSTD_LIBS)
 
 $(INSTALLED): $(TARGET) Makefile
@@ -36,4 +40,4 @@ $(INSTALLED): $(TARGET) Makefile
 install: $(INSTALLED)
 
 clean:
-	rm -f $(TARGET)
+	rm -r $(BUILD_OUT)

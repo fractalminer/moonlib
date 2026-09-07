@@ -1,6 +1,6 @@
-CXX     ?= CXX
-CFLAGS  ?= -O2
-CFLAGS  += -Wall -Wextra -Wpedantic -fPIC
+CXX       ?= g++
+CXXFLAGS  ?= -O2
+CXXFLAGS  += -Wall -Wextra -Wpedantic -fPIC
 
 LUA_VERSION ?= 5.4
 
@@ -13,26 +13,33 @@ LUA_CMOD   ?= $(PREFIX)/lib/lua/$(LUA_VERSION)
 MOON_CMOD  ?= $(LUA_CMOD)/moon
 
 BUILD_OUT  := .build
+TARGET     := $(BUILD_OUT)/zstd.so
 
-TARGET := $(BUILD_OUT)/zstd.so
-OBJECT := $(BUILD_OUT)/zstd.o
+# 2. Dynamic File Discovery using $(wildcard) & Text Manipulation
+SRCS       := $(wildcard src/*.cpp)
+OBJS       := $(patsubst src/%.cpp, $(BUILD_OUT)/%.o, $(SRCS))
 
+# Fixed: This extracts 'zstd.so' and appends it to your destination path
 INSTALLED  := $(MOON_CMOD)/$(notdir $(TARGET))
 
 .PHONY: all install clean
 
+# 3. Keeps intermediate .o files so Make doesn't issue an automatic 'rm'
+.SECONDARY: $(OBJS)
+
 all: $(TARGET)
 
-# Compile.
+# Compile Rule.
 $(BUILD_OUT)/%.o: src/%.cpp Makefile
 	@mkdir -p $(BUILD_OUT)
-	$(CXX) $(CFLAGS) $(LUA_CFLAGS) -c -o $@ $<
+	$(CXX) $(CXXFLAGS) $(LUA_CFLAGS) -c -o $@ $<
 
-# Link.
-.build/%.so: $(BUILD_OUT)/%.o Makefile
+# Link Rule.
+$(TARGET): $(OBJS) Makefile
 	@mkdir -p $(BUILD_OUT)
-	$(CXX) -shared -o $@ $< $(LUA_LIBS) $(ZSTD_LIBS)
+	$(CXX) -shared -o $@ $(OBJS) $(LUA_LIBS) $(ZSTD_LIBS)
 
+# Install Rules.
 $(INSTALLED): $(TARGET) Makefile
 	mkdir -p $(MOON_CMOD)
 	install -m 755 $(TARGET) $(INSTALLED)
@@ -40,4 +47,4 @@ $(INSTALLED): $(TARGET) Makefile
 install: $(INSTALLED)
 
 clean:
-	rm -r $(BUILD_OUT)
+	rm -rf $(BUILD_OUT)

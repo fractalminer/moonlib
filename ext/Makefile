@@ -1,6 +1,6 @@
 CXX       ?= g++
 CXXFLAGS  ?= -O2
-CXXFLAGS  += -Wall -Wextra -Wpedantic -fPIC
+CXXFLAGS  += -std=c++20 -Wall -Wextra -Wpedantic -fPIC
 
 LUA_VERSION ?= 5.4
 
@@ -12,39 +12,42 @@ PREFIX     ?= $(HOME)/.local
 LUA_CMOD   ?= $(PREFIX)/lib/lua/$(LUA_VERSION)
 MOON_CMOD  ?= $(LUA_CMOD)/moon
 
-BUILD_OUT  := .build
-TARGET     := $(BUILD_OUT)/zstd.so
+OUTDIR     := .build
 
-# 2. Dynamic File Discovery using $(wildcard) & Text Manipulation
+HDRS       := src/common.hpp
+
+# 1. Map each source file to its own target .so file.
 SRCS       := $(wildcard src/*.cpp)
-OBJS       := $(patsubst src/%.cpp, $(BUILD_OUT)/%.o, $(SRCS))
+OBJS       := $(patsubst src/%.cpp, $(OUTDIR)/%.o, $(SRCS))
+TARGETS    := $(patsubst src/%.cpp, $(OUTDIR)/%.so, $(SRCS))
 
-# Fixed: This extracts 'zstd.so' and appends it to your destination path
-INSTALLED  := $(MOON_CMOD)/$(notdir $(TARGET))
+# 2. Map target .so files to their individual installation paths.
+INSTALLED  := $(patsubst $(OUTDIR)/%.so, $(MOON_CMOD)/%.so, $(TARGETS))
 
 .PHONY: all install clean
 
-# 3. Keeps intermediate .o files so Make doesn't issue an automatic 'rm'
+# Prevents automatic deletion of intermediate object files.
 .SECONDARY: $(OBJS)
 
-all: $(TARGET)
+# Builds all independent .so libraries.
+all: $(TARGETS)
 
-# Compile Rule.
-$(BUILD_OUT)/%.o: src/%.cpp Makefile
-	@mkdir -p $(BUILD_OUT)
+# Compile individual source files.
+$(OUTDIR)/%.o: src/%.cpp $(HDRS) Makefile
+	@mkdir -p $(OUTDIR)
 	$(CXX) $(CXXFLAGS) $(LUA_CFLAGS) -c -o $@ $<
 
-# Link Rule.
-$(TARGET): $(OBJS) Makefile
-	@mkdir -p $(BUILD_OUT)
-	$(CXX) -shared -o $@ $(OBJS) $(LUA_LIBS) $(ZSTD_LIBS)
+# Link step.
+$(OUTDIR)/%.so: $(OUTDIR)/%.o Makefile
+	@mkdir -p $(OUTDIR)
+	$(CXX) -shared -o $@ $< $(LUA_LIBS) $(ZSTD_LIBS)
 
-# Install Rules.
-$(INSTALLED): $(TARGET) Makefile
-	mkdir -p $(MOON_CMOD)
-	install -m 755 $(TARGET) $(INSTALLED)
+# Install step.
+$(INSTALLED): $(MOON_CMOD)/%.so: $(OUTDIR)/%.so Makefile
+	@mkdir -p $(MOON_CMOD)
+	install -m 755 $< $@
 
 install: $(INSTALLED)
 
 clean:
-	rm -rf $(BUILD_OUT)
+	rm -rf $(OUTDIR)

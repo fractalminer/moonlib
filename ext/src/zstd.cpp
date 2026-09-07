@@ -1,10 +1,18 @@
-#include <cstdint>
+/****************************************************************
+** Simple bindings for the zstd compression library.
+*****************************************************************/
+#include "common.hpp"
 
-#include <lauxlib.h>
-#include <lua.h>
 #include <zstd.h>
 
-static int l_compress( ::lua_State* const L ) {
+#include <cstdint>
+
+namespace {
+
+/****************************************************************
+** Module Implementation.
+*****************************************************************/
+int l_compress( ::lua_State* const L ) {
   size_t src_size       = {};
   char const* const src = luaL_checklstring( L, 1, &src_size );
   int const level =
@@ -26,7 +34,7 @@ static int l_compress( ::lua_State* const L ) {
   return 1;
 }
 
-static int l_decompress( ::lua_State* const L ) {
+int l_decompress( ::lua_State* const L ) {
   size_t src_size       = {};
   char const* const src = luaL_checklstring( L, 1, &src_size );
 
@@ -63,13 +71,14 @@ static int l_decompress( ::lua_State* const L ) {
   return 1;
 }
 
-static ::luaL_Reg const functions[] = {
-  { "compress", l_compress },
-  { "decompress", l_decompress },
-  { NULL, NULL },
-};
+/****************************************************************
+** Module Definition.
+*****************************************************************/
+LUA_MODULE_FUNCTIONS( //
+    compress,         //
+    decompress        //
+);
 
-extern "C" int luaopen_moon_zstd( ::lua_State* const L ) {
-  luaL_newlib( L, functions );
-  return 1;
-}
+} // namespace
+
+LUA_MODULE( zstd );

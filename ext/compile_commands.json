@@ -11,12 +11,12 @@
       "-I/usr/include/lua5.4",
       "-c",
       "-o",
-      ".build/zstd.o",
-      "src/zstd.cpp"
+      ".build/foo.o",
+      "src/foo.cpp"
     ],
     "directory": "/home/dsicilia/dev/moonlib/ext",
-    "file": "/home/dsicilia/dev/moonlib/ext/src/zstd.cpp",
-    "output": "/home/dsicilia/dev/moonlib/ext/.build/zstd.o"
+    "file": "/home/dsicilia/dev/moonlib/ext/src/foo.cpp",
+    "output": "/home/dsicilia/dev/moonlib/ext/.build/foo.o"
   },
   {
     "arguments": [
@@ -30,11 +30,11 @@
       "-I/usr/include/lua5.4",
       "-c",
       "-o",
-      ".build/foo.o",
-      "src/foo.cpp"
+      ".build/zstd.o",
+      "src/zstd.cpp"
     ],
     "directory": "/home/dsicilia/dev/moonlib/ext",
-    "file": "/home/dsicilia/dev/moonlib/ext/src/foo.cpp",
-    "output": "/home/dsicilia/dev/moonlib/ext/.build/foo.o"
+    "file": "/home/dsicilia/dev/moonlib/ext/src/zstd.cpp",
+    "output": "/home/dsicilia/dev/moonlib/ext/.build/zstd.o"
   }
 ]

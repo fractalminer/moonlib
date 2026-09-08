@@ -6,4 +6,4 @@ cd "$this"
 
 make clean
 
-bear -- make -j
+bear -- make -j1

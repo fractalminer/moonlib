@@ -1,5 +1,5 @@
 /****************************************************************
-** Sample/Template Lua Module.
+** Terminal facilities.
 *****************************************************************/
 #include "common.hpp"
 
@@ -11,6 +11,10 @@ namespace {
 /****************************************************************
 ** Module Implementation.
 *****************************************************************/
+// Recent versions of luaposix can do the equivalent of this but
+// until we have that version we just use this to get the ter-
+// minal size.
+//
 // Returns the size of the terminal:
 //
 //   local rows, cols = cterm.size()

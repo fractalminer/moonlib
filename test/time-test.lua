@@ -58,10 +58,10 @@ end
 
 -- This also tests sleep.
 function Test.timeit_micros()
-  local runtime, x, y, z = timeit_micros( function()
+  local runtime, x, y, z = timeit_micros( function( n )
     sleep( .001 )
-    return 3, 2, 1
-  end )
+    return 3, n, 1
+  end, 2 )
   ASSERT_GE( runtime, 900 )
   ASSERT_EQ( x, 3 )
   ASSERT_EQ( y, 2 )

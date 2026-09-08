@@ -51,9 +51,9 @@ local function now_seconds() return now_millis() // 1000 end
 
 -- Return runtime of function in micros, followed by any return
 -- values of the function.
-local function timeit_micros( func )
+local function timeit_micros( func, ... )
   local start = now_micros()
-  local res = pack( func() )
+  local res = pack( func( ... ) )
   local end_ = now_micros()
   return end_ - start, unpack( res )
 end

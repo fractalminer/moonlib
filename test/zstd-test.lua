@@ -69,7 +69,7 @@ function Test.round_trip_l1()
   ASSERT_EQ( d, data )
 end
 
-function Test.round_trip_l2()
+function Test.round_trip_l9()
   ASSERT( not not z )
   ASSERT_EQ( #data, 992 )
 

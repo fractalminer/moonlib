@@ -11,6 +11,25 @@
       "-I/usr/include/lua5.4",
       "-c",
       "-o",
+      ".build/cterm.o",
+      "src/cterm.cpp"
+    ],
+    "directory": "/home/dsicilia/dev/moonlib/ext",
+    "file": "/home/dsicilia/dev/moonlib/ext/src/cterm.cpp",
+    "output": "/home/dsicilia/dev/moonlib/ext/.build/cterm.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-O2",
+      "-std=c++20",
+      "-Wall",
+      "-Wextra",
+      "-Wpedantic",
+      "-fPIC",
+      "-I/usr/include/lua5.4",
+      "-c",
+      "-o",
       ".build/foo.o",
       "src/foo.cpp"
     ],

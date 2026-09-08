@@ -4,10 +4,9 @@
 local M = {}
 
 -----------------------------------------------------------------
--- Aliases.
+-- Imports.
 -----------------------------------------------------------------
-local getenv = os.getenv
-local tointeger = math.tointeger
+local cterm = require( 'moon.cterm' )
 
 -----------------------------------------------------------------
 -- Constants.
@@ -18,14 +17,11 @@ local DEFAULT_COLUMNS = 65
 -- Methods.
 -----------------------------------------------------------------
 function M.terminal_columns()
-  local COLUMNS = getenv( 'COLUMNS' )
-  assert( COLUMNS )
-  assert( type( COLUMNS ) == 'string' )
-  assert( #COLUMNS > 0 )
-  local cols = tointeger( COLUMNS )
-  assert( cols )
-  assert( cols > 0 )
-  return cols
+  local _, columns = cterm.size()
+  assert( columns )
+  assert( type( columns ) == 'number' )
+  assert( columns >= 0 )
+  return columns
 end
 
 function M.terminal_columns_safe()

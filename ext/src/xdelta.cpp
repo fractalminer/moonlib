@@ -1,9 +1,9 @@
 /****************************************************************
 ** Simple bindings for the xdelta3 library.
 *****************************************************************/
-#include "common.hpp"
-
 #include <xdelta3.h>
+
+#include "common.hpp"
 
 #include <cerrno>
 #include <cstdint>
@@ -61,7 +61,12 @@ int l_decode( ::lua_State* const L ) {
   // close in size to the source. NOTE: this must be larger than
   // zero for any source_size otherwise the retry loop below will
   // never terminate.
-  size_t capacity = source_size + 64 * 1024;
+  constexpr size_t extra_capacity = 64 * 1024;
+
+  if( source_size > SIZE_MAX - extra_capacity )
+    return luaL_error( L, "xdelta source is too large" );
+
+  size_t capacity = source_size + extra_capacity;
 
   for( ;; ) {
     ::luaL_Buffer buf  = {};

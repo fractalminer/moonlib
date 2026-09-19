@@ -43,15 +43,12 @@ all: $(TARGETS)
 # Compile (xdelta).
 $(OUTDIR)/xdelta.o: src/xdelta.cpp $(HDRS) Makefile
 	@mkdir -p $(OUTDIR)
-	$(CXX) $(CXXFLAGS) $(LUA_CFLAGS) $(XDELTA_CFLAGS) \
-	  -I$(HOME)/.local/include \
-	  -c -o $@ $<
+	$(CXX) $(CXXFLAGS) $(LUA_CFLAGS) $(XDELTA_CFLAGS) -I$(HOME)/.local/include -c -o $@ $<
 
 # Compile (generic).
 $(OUTDIR)/%.o: src/%.cpp $(HDRS) Makefile
 	@mkdir -p $(OUTDIR)
-	$(CXX) $(CXXFLAGS) $(LUA_CFLAGS) \
-	  -c -o $@ $<
+	$(CXX) $(CXXFLAGS) $(LUA_CFLAGS) -c -o $@ $<
 
 # Link (zstd).
 $(OUTDIR)/zstd.so: $(OUTDIR)/zstd.o Makefile

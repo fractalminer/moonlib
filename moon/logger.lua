@@ -47,7 +47,7 @@ M.level = M.levels.INFO
 -----------------------------------------------------------------
 local function fmt_multi( fmt, ... )
   assert( type( fmt ) == 'string' )
-  if select( '#', ... ) == 1 then
+  if select( '#', ... ) == 0 then
     return fmt
   else
     return format( fmt, ... )

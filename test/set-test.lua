@@ -30,6 +30,7 @@ local listify = assert( list.listify )
 
 local ASSERT = assertion.ASSERT
 local ASSERT_EQ = assertion.ASSERT_EQ
+local ASSERT_NEQ = assertion.ASSERT_NEQ
 local ASSERT_TABLE_EQ = assertion.ASSERT_TABLE_EQ
 local ASSERT_THROWS = assertion.ASSERT_THROWS
 
@@ -187,4 +188,39 @@ function Test.set()
   ASSERT_EQ( s:tostring(), '{four,one,three,two}' )
 
   ASSERT_THROWS( pairs, s )
+
+  -- Equality.
+  s1 = set{}
+  s2 = set{}
+  ASSERT_EQ( s1, s2 )
+  s1 = set{ 'one' }
+  s2 = set{ 'one' }
+  ASSERT_EQ( s1, s2 )
+  s1 = set{ 'one' }
+  s2 = set{ 'two' }
+  ASSERT_NEQ( s1, s2 )
+  s1 = set{ 'one' }
+  s2 = set{ 'one', 'two' }
+  ASSERT_NEQ( s1, s2 )
+  s1 = set{ 'one', 'two' }
+  s2 = set{ 'one' }
+  ASSERT_NEQ( s1, s2 )
+  s1 = set{ 'one', 'two' }
+  s2 = set{ 'one', 'two', 'three' }
+  ASSERT_NEQ( s1, s2 )
+  s1 = set{ 'one', 'two' }
+  s2 = set{ 'one', 'two' }
+  ASSERT_EQ( s1, s2 )
+  s1 = set{ 'one', 'two', 'three' }
+  s2 = set{ 'one', 'two', 'three' }
+  ASSERT_EQ( s1, s2 )
+  s1 = set{ 'one', 'two', 'three' }
+  s2 = set{ 'one', 'two' }
+  ASSERT_NEQ( s1, s2 )
+  s1 = set{ 'one', 'two', 'three' }
+  s2 = set{ 'one' }
+  ASSERT_NEQ( s1, s2 )
+  s1 = set{ 'one', 'two', 'three' }
+  s2 = set{}
+  ASSERT_NEQ( s1, s2 )
 end

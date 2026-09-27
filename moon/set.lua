@@ -21,6 +21,8 @@
 --   assert( not s:contains( 'two' ) )
 --   assert( #s == 2 )
 --
+--   assert( s1 == s2 )  -- compares items.
+--
 --   -- Non-deterministic order.
 --   for elem in s do
 --     ...
@@ -59,14 +61,16 @@ function M.set( lst )
   local o = {}
 
   function methods.add( self, elem )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     assert( elem, 'cannot insert nil into a set' )
     if not contents[elem] then size = size + 1 end
     contents[elem] = true
   end
 
   function methods.del( self, elem )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     assert( elem, 'cannot remove nil into a set' )
     if contents[elem] then size = size - 1 end
     assert( size >= 0 )
@@ -74,49 +78,57 @@ function M.set( lst )
   end
 
   function methods.contains( self, elem )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     assert( elem, 'cannot contain nil in a set' )
     return contents[elem] ~= nil
   end
 
   function methods.size( self )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     return size
   end
 
   function methods.empty( self )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     return size == 0
   end
 
   function methods.clone( self )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     return M.set( self:list() )
   end
 
   -- Non-deterministic order.
   function methods.list( self )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     return listify( self )
   end
 
   -- Returns a sorted list.
   function methods.sorted( self )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     local l = self:list()
     sort( l )
     return l
   end
 
   function methods.clear( self )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     contents = {}
     size = 0
   end
 
   function methods.subtract( self, other )
-    assert( self == o, 'set called with incorrect self object' )
-    if self == other then
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
+    if rawequal( self, other ) then
       self:clear()
       return
     end
@@ -124,14 +136,24 @@ function M.set( lst )
   end
 
   function methods.diff( self, other )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     local copy = self:clone()
     copy:subtract( other )
     return copy
   end
 
+  function methods.equal_to( self, other )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
+    local l = self:diff( other )
+    local r = other:diff( self )
+    return l:empty() and r:empty()
+  end
+
   function methods.tostring( self )
-    assert( self == o, 'set called with incorrect self object' )
+    assert( rawequal( self, o ),
+            'set called with incorrect self object' )
     local cs = { '{' }
     local comma = ''
     for _, e in ipairs( self:sorted() ) do
@@ -161,6 +183,7 @@ function M.set( lst )
     __call=function( _, _, key ) return next( contents, key ) end,
     __sub=methods.diff,
     __tostring=methods.tostring,
+    __eq=methods.equal_to,
   }
 
   local res = setmetatable( o, mt )

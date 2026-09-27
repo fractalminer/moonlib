@@ -50,6 +50,16 @@ function M.title( title, c )
   print( dashes_l .. title .. dashes_r )
 end
 
+function M.section( title, c )
+  assert( title )
+  c = c or '-'
+  local cols = terminal_columns_safe()
+  local dashes = string.rep( c, cols )
+  print( dashes )
+  print( title )
+  print( dashes )
+end
+
 -- Given this input:
 --
 --   local desc = {

@@ -45,6 +45,15 @@ M.level = M.levels.INFO
 -----------------------------------------------------------------
 -- Implementation.
 -----------------------------------------------------------------
+local function fmt_multi( fmt, ... )
+  assert( type( fmt ) == 'string' )
+  if select( '#', ... ) == 1 then
+    return fmt
+  else
+    return format( fmt, ... )
+  end
+end
+
 local function stamp()
   local ms = gettimeofday().usec // 1000
   return format( '%s.%03d', os.date( '%Y-%m-%d.%H:%M:%S' ), ms )
@@ -53,7 +62,7 @@ end
 function M.info( fmt, ... )
   if M.level < M.levels.INFO then return end
   assert( fmt )
-  local msg = format( fmt, ... )
+  local msg = fmt_multi( fmt, ... )
   printfln( '%s %sINF%s %s', stamp(), ANSI_GREEN, ANSI_NORMAL,
             msg )
   io.flush()
@@ -62,7 +71,7 @@ end
 function M.debug( fmt, ... )
   if M.level < M.levels.DEBUG then return end
   assert( fmt )
-  local msg = format( fmt, ... )
+  local msg = fmt_multi( fmt, ... )
   printfln( '%s %sDBG%s %s', stamp(), ANSI_BLUE, ANSI_NORMAL, msg )
   io.flush()
 end
@@ -73,7 +82,7 @@ M.dbg = assert( M.debug )
 function M.trace( fmt, ... )
   if M.level < M.levels.TRACE then return end
   assert( fmt )
-  local msg = format( fmt, ... )
+  local msg = fmt_multi( fmt, ... )
   printfln( '%s %sTRC%s %s', stamp(), ANSI_MAGENTA, ANSI_NORMAL,
             msg )
   io.flush()
@@ -82,7 +91,7 @@ end
 function M.warn( fmt, ... )
   if M.level < M.levels.WARNING then return end
   assert( fmt )
-  local msg = format( fmt, ... )
+  local msg = fmt_multi( fmt, ... )
   io.stderr:write( format( '%s %sWRN%s %s\n', stamp(),
                            ANSI_INTENSE_YELLOW, ANSI_NORMAL, msg ) )
   io.flush()
@@ -91,7 +100,7 @@ end
 function M.err( fmt, ... )
   if M.level < M.levels.ERROR then return end
   assert( fmt )
-  local msg = format( fmt, ... )
+  local msg = fmt_multi( fmt, ... )
   io.stderr:write(
       format( '%s %s%sERR%s %s\n', stamp(), ANSI_RED, ANSI_BOLD,
               ANSI_NORMAL, msg ) )

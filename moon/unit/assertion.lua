@@ -59,6 +59,13 @@ function M.ASSERT_GT( l, r )
   error( tostring( l ) .. ' <= ' .. tostring( r ), 2 )
 end
 
+function M.ASSERT_MATCH( s, pat )
+  assert( type( s ) == 'string' )
+  assert( type( pat ) == 'string' )
+  if s:match( pat ) then return end
+  error( s .. ' does not match pattern "' .. pat .. '"' )
+end
+
 function M.ASSERT_TABLE_EQ( l, r )
   local ok, k, l_v, l_r = tables_equal( l, r )
   if ok then return end

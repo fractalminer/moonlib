@@ -67,6 +67,7 @@ function M.harden( tbl, options )
     end
     return v
   end
+  mt.__len = function( _ ) return #frozen end
   mt.__pairs = function( _ ) return pairs( frozen ) end
   --[[ NOTE: __ipairs removed in 5.4, uses __index method. ]]
   mt.__newindex = function( _, _, _ )

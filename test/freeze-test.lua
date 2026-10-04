@@ -57,6 +57,7 @@ function Test.harden()
   ASSERT_EQ( o.bb, 'hello' )
   ASSERT_EQ( o.c.d, 3.4 )
   ASSERT_EQ( o.c.e[2], 'second' )
+  ASSERT_EQ( #o.c.e, 3 )
 
   local ATS = ASSERT_THROWS_SUBSTR
 

@@ -88,7 +88,16 @@ function M.trace( fmt, ... )
   io.flush()
 end
 
-function M.warn( fmt, ... )
+-- NOTE: this is deprecated because Lua 5.4 has a native warn()
+-- function that writes to stderr when enabled (it's kind of a
+-- strange API that we don't want to use).
+-- @deprecated
+function M.warn()
+  error(
+      'moon.logger.warn has been removed; use moon.logger.warning instead.' )
+end
+
+function M.warning( fmt, ... )
   if M.level < M.levels.WARNING then return end
   assert( fmt )
   local msg = fmt_multi( fmt, ... )

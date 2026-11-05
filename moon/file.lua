@@ -83,6 +83,33 @@ function M.chmod( file, symbolic )
   assert( posix.chmod( file, symbolic ) )
 end
 
+function M.mkdir_p( path )
+  path = trim( path )
+  assert( #path > 0, 'empty path' )
+  local current = ''
+  if path:sub( 1, 1 ) == '/' then current = '/' end
+
+  -- Split the path by the directory separator "/"
+  for component in path:gmatch( '[^/]+' ) do
+    if current == '' or current == '/' then
+      current = current .. component
+    else
+      current = current .. '/' .. component
+    end
+
+    -- Check if the component already exists
+    local stat_info = stat.stat( current )
+    if not stat_info then
+      -- Directory doesn't exist, try to create it
+      assert( posix.mkdir( current ) )
+    elseif not stat_info.type == 'directory' then
+      -- A file already exists with this component's name.
+      error(
+          format( '%s exists but is not a directory', current ) )
+    end
+  end
+end
+
 -----------------------------------------------------------------
 -- Finished.
 -----------------------------------------------------------------

@@ -6,8 +6,8 @@ local Test = ...
 -----------------------------------------------------------------
 -- Imports.
 -----------------------------------------------------------------
-local assertion = require'moon.unit.assertion'
-local file = require'moon.file'
+local assertion = require( 'moon.unit.assertion' )
+local file = require( 'moon.file' )
 
 -----------------------------------------------------------------
 -- Freeze global access.
@@ -26,8 +26,9 @@ local _ENV = nil
 local ASSERT = assertion.ASSERT
 local ASSERT_EQ = assertion.ASSERT_EQ
 
-local copy_file = file.copy_file
-local exists = file.exists
+local copy_file = assert( file.copy_file )
+local exists = assert( file.exists )
+local mkdir_p = assert( file.mkdir_p )
 
 -----------------------------------------------------------------
 -- Test cases.
@@ -62,4 +63,35 @@ function Test.copy_file()
 
   ASSERT( exists( input ) )
   ASSERT( exists( output ) )
+end
+
+function Test.mkdir_p()
+  local d = '/tmp/aaa/bbb/ccc/ddd'
+
+  local function rmdir( path )
+    assert( path:sub( 1, 4 ) == '/tmp' )
+    if exists( path ) then os.execute( 'rm -r ' .. path ) end
+  end
+
+  rmdir( '/tmp/aaa' )
+
+  ASSERT( not exists( '/tmp/aaa' ) )
+  ASSERT( not exists( d ) )
+
+  mkdir_p( d )
+
+  ASSERT( exists( '/tmp/aaa' ) )
+  ASSERT( exists( d ) )
+
+  mkdir_p( d )
+  ASSERT( exists( d ) )
+
+  rmdir( '/tmp/aaa/bbb/ccc' )
+  ASSERT( not exists( d ) )
+  ASSERT( not exists( '/tmp/aaa/bbb/ccc' ) )
+  ASSERT( exists( '/tmp/aaa/bbb' ) )
+  ASSERT( exists( '/tmp/aaa' ) )
+
+  mkdir_p( d )
+  ASSERT( exists( d ) )
 end

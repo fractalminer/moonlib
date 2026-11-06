@@ -83,6 +83,16 @@ function M.chmod( file, symbolic )
   assert( posix.chmod( file, symbolic ) )
 end
 
+function M.is_path_absolute( p )
+  assert( p )
+  assert( type( p ) == 'string' )
+  if p:sub( 1, 1 ) == '/' then
+    return true
+  else
+    return false, format( 'path %s is not an absolute path', p )
+  end
+end
+
 function M.mkdir_p( path )
   path = trim( path )
   assert( #path > 0, 'empty path' )

@@ -29,6 +29,7 @@ local ASSERT_EQ = assertion.ASSERT_EQ
 local copy_file = assert( file.copy_file )
 local exists = assert( file.exists )
 local mkdir_p = assert( file.mkdir_p )
+local is_path_absolute = assert( file.is_path_absolute )
 
 -----------------------------------------------------------------
 -- Test cases.
@@ -94,4 +95,22 @@ function Test.mkdir_p()
 
   mkdir_p( d )
   ASSERT( exists( d ) )
+end
+
+function Test.is_path_absolute()
+  ASSERT( not is_path_absolute( '' ) )
+  ASSERT( not is_path_absolute( ' ' ) )
+  ASSERT( not is_path_absolute( ' a ' ) )
+  ASSERT( not is_path_absolute( ' /aaa ' ) )
+  ASSERT( not is_path_absolute( ' /a/b/c' ) )
+  ASSERT( is_path_absolute( '/a/b/c' ) )
+  ASSERT( is_path_absolute( '/a/b/' ) )
+  ASSERT( is_path_absolute( '/a/b/ ' ) )
+  ASSERT( is_path_absolute( '/a/b' ) )
+  ASSERT( is_path_absolute( '/a/' ) )
+  ASSERT( is_path_absolute( '/aaa/' ) )
+  ASSERT( is_path_absolute( '/aaa' ) )
+  ASSERT( is_path_absolute( '/a' ) )
+  ASSERT( is_path_absolute( '/' ) )
+  ASSERT( is_path_absolute( '//' ) )
 end
